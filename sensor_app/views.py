@@ -1,15 +1,18 @@
-from rest_framework.decorators import api_view
 import io
-from rest_framework.response import Response
-from django.shortcuts import render
+from datetime import timedelta
+import matplotlib.pyplot as plt
+
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
+from django.shortcuts import render
+from django.utils import timezone
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from .models import IlluminanceData
 from .serializers import IlluminanceDataSerializer
-import matplotlib.pyplot as plt
-from django.conf import settings
-from django.utils import timezone
-from datetime import timedelta
-from django.contrib.auth.decorators import login_required
 
 
 @api_view(['POST'])
