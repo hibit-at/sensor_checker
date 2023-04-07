@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Illuminance Chart</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div style="text-align:center">
+        <h1>{{ room_name }} Illuminance Chart</h1>
+        <p>部屋の状態：<button id="roomStatus" class="btn">-</button> 最終更新：<span id="latestTime">-</span></p>
+        <p>
+        <img id="illuminanceGraph" src="{% url 'create_graph' %}" alt="Illuminance Graph" />
+        </p>
+        <a href="{% url 'logout' %}" class="btn btn-danger">ログアウト</a>
+
+
+    <script>
+        function updateGraph() {
+            fetch("{% url 'create_graph' %}")
+            .then(response => response.blob())
+            .then(blob => {
+                const imgUrl = URL.createObjectURL(blob);
+                document.getElementById("illuminanceGraph").src = imgUrl;
+            });
+        }
+
+        function updateRoomStatus() {
+            fetch("{% url 'room_status' %}")
+            .then(response => response.json())
+            .then(data => {
+                const roomStatusButton = document.getElementById("roomStatus");
+                roomStatusButton.textContent = data.status;
+                document.getElementById("latestTime").textContent = `${data.latest_time}`;
+        
+                // Update button class based on data.is_present
+                if (data.is_present) {
+                    roomStatusButton.classList.remove("btn-outline-success");
+                    roomStatusButton.classList.add("btn-success");
+                } else {
+                    roomStatusButton.classList.remove("btn-success");
+                    roomStatusButton.classList.add("btn-outline-success");
+                }
+            });
+        }
+        
+
+        function updateData() {
+            updateGraph();
+            updateRoomStatus();
+        }
+
+        updateData(); // ページ読み込み時にデータを更新
+        setInterval(updateData, 10000);
+    </script>
+</div>
+</body>
+</html>

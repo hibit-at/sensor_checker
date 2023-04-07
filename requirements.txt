@@ -1,0 +1,8 @@
+Django
+djangorestframework
+gunicorn
+dj-database-url
+psycopg2
+matplotlib
+Pillow
+whitenoise
